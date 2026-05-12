@@ -6,6 +6,8 @@ import { useRef } from "react";
 import { topCitiesApiHandler, TopCitiesResponse } from "@/services/homeService";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "nextjs-toploader/app";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 type CityItem = {
   id?: string;
@@ -185,40 +187,67 @@ export default function RealEstateSection() {
         subHeading="Discover verified opportunities in prime urban markets."
         hideButton={true}
       />
-      <div className="mt-10" ref={ref}>
-        {/* First Row */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 will-change-transform"
-          variants={leftRowVariant}
-          animate={isInView ? "visible" : "hidden"}
-        >
-          {cities.slice(0, 3).map((exploreDetail) => (
-            <ExploreCard
-              key={exploreDetail.name}
-              id={exploreDetail.id}
-              name={exploreDetail.name}
-              image={exploreDetail.imageUrl}
-              properties={exploreDetail.propertyCount}
-            />
-          ))}
-        </motion.div>
-        {/* Second Row */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 will-change-transform"
-          variants={rightRowVariant}
-          animate={isInView ? "visible" : "hidden"}
-        >
-          {cities.slice(3).map((exploreDetail) => (
-            <ExploreCard
-              key={exploreDetail.name}
-              id={exploreDetail.id}
-              name={exploreDetail.name}
-              image={exploreDetail.imageUrl}
-              properties={exploreDetail.propertyCount}
-            />
-          ))}
-        </motion.div>
-      </div>
+      <div className="mt-10 -mr-4" ref={ref}>
+  <div className="lg:hidden">
+    <Swiper
+      spaceBetween={12} 
+      slidesPerView={2.1} 
+      breakpoints={{
+        640: {
+          slidesPerView: 2.2,
+        },
+      }}
+      className="pb-5"
+    >
+      {cities.map((exploreDetail) => (
+        <SwiperSlide key={exploreDetail.name}>
+          <ExploreCard
+            id={exploreDetail.id}
+            name={exploreDetail.name}
+            image={exploreDetail.imageUrl}
+            properties={exploreDetail.propertyCount}
+          />
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+
+  <div className="hidden lg:block">
+    {/* First Row */}
+    <motion.div
+      className="grid grid-cols-3 gap-4 will-change-transform"
+      variants={leftRowVariant}
+      animate={isInView ? "visible" : "hidden"}
+    >
+      {cities.slice(0, 3).map((exploreDetail) => (
+        <ExploreCard
+          key={exploreDetail.name}
+          id={exploreDetail.id}
+          name={exploreDetail.name}
+          image={exploreDetail.imageUrl}
+          properties={exploreDetail.propertyCount}
+        />
+      ))}
+    </motion.div>
+
+    {/* Second Row */}
+    <motion.div
+      className="grid grid-cols-2 gap-4 mt-4 will-change-transform"
+      variants={rightRowVariant}
+      animate={isInView ? "visible" : "hidden"}
+    >
+      {cities.slice(3).map((exploreDetail) => (
+        <ExploreCard
+          key={exploreDetail.name}
+          id={exploreDetail.id}
+          name={exploreDetail.name}
+          image={exploreDetail.imageUrl}
+          properties={exploreDetail.propertyCount}
+        />
+      ))}
+    </motion.div>
+  </div>
+</div>
     </div>
   );
 }

@@ -35,7 +35,7 @@ export default function MainHome({ topProperties }: MainHomeProps) {
         </div>
       </div>
       <div className="flex justify-center mt-10">
-        <div className="w-[90%] lg:w-[55%]">
+        <div className="w-[85%] lg:w-[55%]">
           <Filter />
         </div>
       </div>

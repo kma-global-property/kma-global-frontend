@@ -3,12 +3,14 @@ import Image from "next/image";
 import SectionHeader from "../common/home/secionHeader";
 import { useId, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import {
-  ChannelPartner,
-} from "@/services/homeService";
+import { ChannelPartner } from "@/services/homeService";
 import ContactUsPopup from "../contactUsPopup";
 import { joinUrl } from "@/lib/helper";
 import { useRouter } from "nextjs-toploader/app";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 type SelectedCity = { id?: unknown; name?: string } | null | undefined;
 
@@ -93,23 +95,129 @@ export default function ChannelPartnerSection({
         heading="Become a Channel Partner"
         subHeading="Join hands with us and unlock new opportunities in the real estate ecosystem."
       />
-      <div className="grid  grid-cols-1 sm:grid-cols-[1fr_1fr] 2md:grid-cols-[1fr_1fr_1fr] xl:grid-cols-[1fr_1fr_1fr_1fr] gap-3 mt-6">
-        {displayList.map((item, index) => {
+      <div className="mt-6">
+        <div className="xl:hidden w-full partner-swiper">
+          <Swiper
+            spaceBetween={12}
+            slidesPerView={1.15}
+            pagination={{ clickable: true }}
+            className="pb-12"
+          >
+            {displayList.map((item, index) => {
+              const cityList =
+                item?.cities
+                  ?.split(",")
+                  .map((c) => c.trim())
+                  .filter(Boolean) ?? [];
+              const profileSrc = joinUrl(profileBaseUrl, item?.profile_image);
+              const ratingValue = Number(item?.average_rating ?? item?.rating);
+              const ratingText = Number.isFinite(ratingValue)
+                ? ratingValue.toFixed(1)
+                : "0.0";
+
+              return (
+                <SwiperSlide key={item?.id ?? index}>
+                  <motion.div
+                    onClick={() => router.push("/channel-partner")}
+                    className="cursor-pointer bg-white p-5 flex flex-col rounded-2xl border border-[#EEF0F4] shadow-[0_6px_24px_rgba(0,0,0,0.06)] h-full"
+                    variants={
+                      [0, 1, 2, 3].includes(index) ? leftVariant : rightVariant
+                    }
+                    initial="hidden"
+                    animate={isInView ? "visible" : "hidden"}
+                  >
+                    {/* Profile Section */}
+                    <div className="flex items-start gap-3">
+                      {profileSrc ? (
+                        <Image
+                          src={profileSrc}
+                          width={56}
+                          height={56}
+                          alt="profile"
+                          className="h-14 w-14 rounded-full object-cover ring-1 ring-[#EEF0F4]"
+                        />
+                      ) : (
+                        <div className="h-14 w-14 rounded-full bg-[#F2F2F2] flex items-center justify-center text-base font-semibold text-text-black uppercase ring-1 ring-[#EEF0F4]">
+                          {item?.name?.charAt(0) ?? "?"}
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-text-black text-lg font-semibold leading-6 truncate">
+                            {item?.name}
+                          </p>
+                          <span className="shrink-0 bg-[#000066] rounded-lg px-2 py-1 text-white text-xs font-semibold flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-white" /> {ratingText}
+                          </span>
+                        </div>
+                        <span className="mt-2 inline-flex w-fit rounded-lg bg-[#FE792D] px-3 py-1 text-xs font-semibold text-white">
+                          KMA Expert Pro
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-sm text-text-gray">
+                      {item?.experience_years ?? 0} Years Experience{" "}
+                      <span className="mx-2 text-[#D9D9D9]">|</span>{" "}
+                      {item?.property_count ?? 0} Properties
+                    </p>
+
+                    {/* Cities */}
+                    <div className="mt-3 flex flex-wrap gap-2 min-h-[30px]">
+                      {cityList.slice(0, 2).map((city, cityIndex) => (
+                        <span
+                          key={cityIndex}
+                          className="px-4 py-1 text-xs bg-[#F2F2F2] rounded-full text-text-gray"
+                        >
+                          {city}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenContact(true);
+                      }}
+                      className="animated-button mt-auto w-full py-3 px-6 cursor-pointer"
+                    >
+                      <span className="flex items-center justify-center gap-2 relative z-11">
+                        <Image
+                          src="/assets/call-ring-white.svg"
+                          width={18}
+                          height={18}
+                          alt="Phone"
+                        />
+                        <span className="font-semibold text-sm">
+                          Contact Now
+                        </span>
+                      </span>
+                    </button>
+                  </motion.div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </div>
+
+        <div className="hidden xl:grid grid-cols-[1fr_1fr_1fr_1fr] gap-3">
+          {displayList.map((item, index) => {
             const cityList =
               item?.cities
                 ?.split(",")
                 .map((c) => c.trim())
                 .filter(Boolean) ?? [];
-
-            const profileSrc =
-              joinUrl(profileBaseUrl, item?.profile_image);
+            const profileSrc = joinUrl(profileBaseUrl, item?.profile_image);
             const ratingValue = Number(item?.average_rating ?? item?.rating);
-            const ratingText = Number.isFinite(ratingValue) ? ratingValue.toFixed(1) : "0.0";
+            const ratingText = Number.isFinite(ratingValue)
+              ? ratingValue.toFixed(1)
+              : "0.0";
 
             return (
               <motion.div
-                key={item?.id ?? `${item?.name ?? "partner"}-${index}`}
-                onClick={() => router.push('/channel-partner')}
+                key={item?.id ?? index}
+                onClick={() => router.push("/channel-partner")}
                 className="cursor-pointer bg-white p-5 flex flex-col rounded-2xl border border-[#EEF0F4] shadow-[0_6px_24px_rgba(0,0,0,0.06)]"
                 variants={
                   [0, 1, 2, 3].includes(index) ? leftVariant : rightVariant
@@ -123,7 +231,7 @@ export default function ChannelPartnerSection({
                       src={profileSrc}
                       width={56}
                       height={56}
-                      alt={`${item?.name ?? "Channel partner"} profile`}
+                      alt="profile"
                       className="h-14 w-14 rounded-full object-cover ring-1 ring-[#EEF0F4]"
                     />
                   ) : (
@@ -131,43 +239,35 @@ export default function ChannelPartnerSection({
                       {item?.name?.charAt(0) ?? "?"}
                     </div>
                   )}
-
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-text-black text-lg font-semibold leading-6 truncate">
                         {item?.name}
                       </p>
-                      <span className="shrink-0 bg-blue rounded-lg px-2 py-1 text-white text-xs font-semibold flex items-center gap-1">
-                        <Star className="h-4 w-4" />
-                        {ratingText}
+                      <span className="shrink-0 bg-[#000066] rounded-lg px-2 py-1 text-white text-xs font-semibold flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-white" /> {ratingText}
                       </span>
                     </div>
-
                     <span className="mt-2 inline-flex w-fit rounded-lg bg-[#FE792D] px-3 py-1 text-xs font-semibold text-white">
                       KMA Expert Pro
                     </span>
                   </div>
                 </div>
-
                 <p className="mt-3 text-sm text-text-gray">
-                  {item?.experience_years ?? 0} Years Experience
-                  <span className="mx-2 text-[#D9D9D9]">|</span>
+                  {item?.experience_years ?? 0} Years Experience{" "}
+                  <span className="mx-2 text-[#D9D9D9]">|</span>{" "}
                   {item?.property_count ?? 0} Properties
                 </p>
-
-                {cityList.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {cityList.map((city, cityIndex) => (
-                      <span
-                        key={`${city}-${cityIndex}`}
-                        className="px-4 py-1 text-xs bg-[#F2F2F2] rounded-full text-text-gray"
-                      >
-                        {city}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {cityList.map((city, cityIndex) => (
+                    <span
+                      key={cityIndex}
+                      className="px-4 py-1 text-xs bg-[#F2F2F2] rounded-full text-text-gray"
+                    >
+                      {city}
+                    </span>
+                  ))}
+                </div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -182,18 +282,20 @@ export default function ChannelPartnerSection({
                       height={18}
                       alt="Phone"
                     />
-                    <span className="text-nowrap font-semibold text-sm">
-                      Contact Now
-                    </span>
+                    <span className="font-semibold text-sm">Contact Now</span>
                   </span>
                 </button>
               </motion.div>
             );
-        })}
+          })}
+        </div>
       </div>
-      <ContactUsPopup open={openContact} onClose={() => {
-        setOpenContact(false);
-      }}/>
+      <ContactUsPopup
+        open={openContact}
+        onClose={() => {
+          setOpenContact(false);
+        }}
+      />
     </div>
   );
 }

@@ -51,14 +51,14 @@ export default function SectionHeader({
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
     >
-      <div className="w-full">
+      <div className="w-full flex md:block justify-center items-center flex-col">
         <div className="bg-gray-400 h-0.5 w-8 mb-2">
           <div className="w-1/2 h-0.5 bg-gray-900" />
         </div>
-        <h2 className="kma_title text-black font-semibold">{heading}</h2>
-        <h3 className="text-text-gray text-xs">{subHeading}</h3>
+        <h2 className="kma_title text-black font-semibold leading-[110%]">{heading}</h2>
+        <h3 className="text-text-gray text-xs text-center lg:text-left">{subHeading}</h3>
       </div>
-      <div className="flex gap-3 w-full md:justify-end">
+      <div className="flex gap-3 w-full justify-center mx-auto md:justify-end">
         {channelPartnerBtn && (
           <button onClick={naviageChannelPartner} className="font-medium w-auto text-sm 1xl:text-base animated-button px-9 py-2 border border-blue text-blue! hover:text-white! bg-transparent! text-center cursor-pointer">
             <span className="gap-3 relative flex justify-center">

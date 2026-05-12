@@ -65,7 +65,7 @@ const WorkingSectionImage = ({ imageUrl, width = 500, height = 250 }) => {
           x2="0.224"
           y2="0.950"
           stroke="white"
-          stroke-width="0.013"
+          strokeWidth="0.013"
         ></line>
         <line
           x1="0.07"
@@ -73,7 +73,7 @@ const WorkingSectionImage = ({ imageUrl, width = 500, height = 250 }) => {
           x2="0.23"
           y2="0.790"
           stroke="white"
-          stroke-width="0.020"
+          strokeWidth="0.020"
         ></line>
         {/* <line
           x1="0.82"
