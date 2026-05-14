@@ -1,5 +1,4 @@
 {
   "buildCommand": "cd buyer && npm run build",
-  "outputDirectory": "buyer/.next",
   "installCommand": "cd buyer && npm install"
 }
